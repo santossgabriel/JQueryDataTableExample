@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Services;
@@ -15,9 +17,31 @@ namespace Controllers
     }
 
     [HttpGet]
-    public object Get(object filtro)
+    public object Get(Filter filtro)
     {
-      return new { data = _service.GetAll() };
+      var list = _service.GetAll();
+      int total = list.Count;
+
+      list = list.Where(p => string.IsNullOrEmpty(filtro.SearchText) || p.Name.Contains(filtro.SearchText)).ToList();
+      int filtrados = list.Count;
+
+      PropertyInfo prop = typeof(Pokemon).GetProperty(filtro.OrderBy);
+
+      if (prop != null)
+      {
+        if (filtro.OrderDir == "asc")
+          list = list.OrderBy(p => prop.GetValue(p, null)).ToList();
+        else
+          list = list.OrderByDescending(p => prop.GetValue(p, null)).ToList();
+      }
+
+      list = list.Skip(filtro.Start).Take(filtro.Length).ToList();
+      return new
+      {
+        data = list,
+        recordsTotal = total,
+        recordsFiltered = filtrados
+      };
     }
 
     [HttpGet("{id}")]

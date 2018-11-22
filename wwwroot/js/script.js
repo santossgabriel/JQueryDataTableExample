@@ -56,21 +56,28 @@ const buscarPokemon = (id) => {
 
 $(document).ready(() => {
   $('#dataGrid').DataTable({
-    "processing": true,
-    "serverSide": true,
-    "ajax": {
+    searchDelay: 3000,
+    processing: true,
+    serverSide: true,
+    ajax: {
       url: "/api/pokemon",
-      dataSrc: (json) => {
-        console.log(json)
-        return json
+      data: function (d) {
+
+        const order = d.columns[d.order[0].column].data
+
+        d.nome = 'Fulaninho'
+        d.orderBy = `${order[0].toUpperCase()}${order.substring(1)}`
+        d.orderDir = d.order[0].dir
+        d.searchText = d.search.value
+        return d
       }
     },
-    "columns": [
-      { "data": "id" },
-      { "data": "name" },
-      { "data": "experience" },
-      { "data": "height" },
-      { "data": "weight" }
+    columns: [
+      { data: "id" },
+      { data: "name" },
+      { data: "experience" },
+      { data: "height" },
+      { data: "weight" }
     ]
   });
 })
