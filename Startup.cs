@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Repository;
+using Services;
 
 namespace JQueryDataTableExample
 {
@@ -16,6 +18,14 @@ namespace JQueryDataTableExample
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddMvc();
+      // PokemonRepository repository = new PokemonRepository();
+      // PokemonService service = new PokemonService();
+      // var pokemons = service.GetAll();
+      // var ids = pokemons.Select(p => p.Id).Distinct();
+      // foreach(var id in ids)
+      // {
+      //   repository.Add(pokemons.First(p => p.Id == id));
+      // }
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
